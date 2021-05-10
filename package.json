@@ -1,0 +1,28 @@
+{
+  "name": "supply-chain-product-catalog",
+  "version": "1.0.0",
+  "description": "Product catalog with supply chain API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artsiom-tsaryonau/supply-chain-product-catalog.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artsiom-tsaryonau/supply-chain-product-catalog/issues"
+  },
+  "homepage": "https://github.com/artsiom-tsaryonau/supply-chain-product-catalog#readme",
+  "dependencies": {
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "chance": "^1.1.7",
+    "mocha": "^8.4.0"
+  }
+}

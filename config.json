@@ -1,4 +1,7 @@
 {
     "supplyChain": "https://test/supply-chain",
-    "serverURL": "http://localhost:3000"
+    "server": {
+        "host": "http://localhost",
+        "port": 2021
+    }
 }

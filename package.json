@@ -4,7 +4,8 @@
   "description": "Product catalog with supply chain API",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "start": "node app/index.js",
+    "test": "mocha --exit"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/artsiom-tsaryonau/supply-chain-product-catalog#readme",
   "dependencies": {
+    "express": "^4.17.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

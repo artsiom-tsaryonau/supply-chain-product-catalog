@@ -4,12 +4,13 @@ const { expect, assert } = require('chai');
 const chaiHttp = require('chai-http');
 const uuid = require('uuid');
 const chance = require('chance').Chance();
+let app = require('../app/index');
 
 chai.use(chaiHttp);
 
 describe("API endpoint spec tests", async () => {
     before(async () => {
-        server = chai.request(config.serverURL).keepOpen();
+        server = chai.request(app).keepOpen();
         testResources = [];
     });
 

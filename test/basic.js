@@ -6,8 +6,12 @@ let app = require('../app/index');
 chai.use(chaiHttp);
 
 describe("Basic server test", async () => {
+    before(async () => server = chai.request(app));
+
     it('Test server is running', async () => {
-        let res = await chai.request(app).get(`/`);
+        let res = await server.get(`/`);
         expect(res).to.have.status(200);
     });
+
+    after(async () => server.close());
 });

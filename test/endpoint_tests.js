@@ -23,6 +23,16 @@ describe("API endpoint spec tests", async function () {
         expect(res.body.content).to.have.property('bundle').that.has.length.at.least(1);
     });
 
+    it('Get product spec test', async function () {
+        // usually done in before but I hardcode it there
+        let id = 'e8fa3d82-457f-485d-9652-a192de550268';
+        res = await server
+            .get('/api/product/e8fa3d82-457f-485d-9652-a192de550268');
+        expect(res).to.have.status(200);
+        expect(res.body.code).equals('Done');
+        expect(res.body.content.id).to.be.equal(id);
+    });
+
     it('Add new product spec test', async function () {
         let res = await server
             .post('/api/product')

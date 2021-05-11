@@ -19,6 +19,6 @@ app.route("/api/product/:id")
     .delete(product.deleteProduct)
     .put(product.updateProduct);
 
-app.listen(port, () => console.log(`Hello world app listening on port ${port}!`));
+app.listen(port, () => console.log(`Supply chain app listening on port ${port}!`));
 
 module.exports = app;

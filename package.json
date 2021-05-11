@@ -19,6 +19,7 @@
   "homepage": "https://github.com/artsiom-tsaryonau/supply-chain-product-catalog#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "fastq": "^1.11.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {

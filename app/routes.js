@@ -1,35 +1,45 @@
 const { supplyChain } = require('../config.json');
+const superagent = require('superagent');
+const { queue } = require('./processor');
+const uuid = require('uuid');
 
+// GET requests go by QUERY route
 function listProducts(req, res) {
-    res.status(200).json({
-        bundle: [{
-            id: '1',
-            name: 'random name',
-            price: 0.0,
-            quantity: 1
-        }]
+    superagent.get(supplyChain, (err, sp) => {
+        if (err) {
+            res.status(500).json({ code: 'Error', message: 'Failed to process request. Try again later.' });
+        } else {
+            res.status(200).json({ code: 'Done', content: sp.body });
+        }
     });
 }
 
 function getProduct(req, res) {
-    res.status(200).json({
-        id: req.params.id,
-        name: 'random name',
-        price: 0.0,
-        quantity: 1
+    superagent.get(`${supplyChain}/${req.params.id}`, (err, sp) => {
+        if (err) {
+            res.status(500).json({ code: 'Error', message: 'Failed to process request. Try again later.' });
+        } else {
+            res.status(200).json({ code: 'Done', content: sp.body });
+        }
     });
 }
 
+// POST, PUT, DELETE requests go by COMMAND route
 function deleteProduct(req, res) {
-    res.status(204);
+    queue.push({ 'type': 'DELETE', 'endpoint': `${supplyChain}/${req.params.id}` });
+    res.status(204).send();
 }
 
 function addProduct(req, res) {
-    res.status(201).json(req.body);
+    req.body.id = uuid.v4();
+
+    queue.push({ 'type': 'POST', 'endpoint': supplyChain, 'payload': req.body });
+    res.status(201).json({ code: 'Enqueued', content: req.body });
 }
 
 function updateProduct(req, res) {
-    res.status(200).json(req.body);
+    queue.push({ 'type': 'PUT', 'endpoint': supplyChain, 'payload': req.body });
+    res.status(200).json({ code: 'Enqueued', content: req.body });
 }
 
 module.exports = { listProducts, getProduct, deleteProduct, addProduct, updateProduct };

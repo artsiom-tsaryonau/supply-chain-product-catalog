@@ -24,7 +24,7 @@ describe("API endpoint spec tests", async function () {
     });
 
     it('Get product spec test', async function () {
-        // usually done in before but I hardcode it there
+        // usually done in before but I hardcode it here
         let id = 'e8fa3d82-457f-485d-9652-a192de550268';
         res = await server
             .get('/api/product/e8fa3d82-457f-485d-9652-a192de550268');

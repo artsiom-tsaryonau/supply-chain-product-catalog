@@ -1,6 +1,5 @@
-const config = require('../config.json');
 const chai = require('chai');
-const { expect, assert } = require('chai');
+const { expect } = require('chai');
 const chaiHttp = require('chai-http');
 const uuid = require('uuid');
 const chance = require('chance').Chance();
@@ -8,82 +7,68 @@ let app = require('../app/index');
 
 chai.use(chaiHttp);
 
-describe("API endpoint spec tests", async () => {
-    // this.timeout(0);
+describe("API endpoint spec tests", async function () {
+    this.timeout(0);
 
-    before(async () => {
-        server = chai.request(app).keepOpen();
-        testResources = [];
+    before(async function () {
+        server = await chai.request(app).keepOpen();
+        test_res = [];
     });
 
-    it('List products spec test', async () => {
-        // initial resource just in case if the supply chain is empty
-        let product_id = uuid.v4();
-        let res = await server
-            .post('/api/product')
-            .send({
-                id: product_id,
-                name: chance.string({ alpha: true, length: 10 }),
-                price: 0.0,
-                quantity: 1
-            });
-        expect(res).to.have.status(201);
-        expect(res.body).to.have.property('id').that.equals(product_id);
-        testResources.push(product_id);
-
+    it('List products spec test', async function () {
         res = await server
             .get('/api/product');
         expect(res).to.have.status(200);
-        expect(res.body).to.have.property('bundle').that.has.length.at.least(1);
+        expect(res.body.code).equals('Done');
+        expect(res.body.content).to.have.property('bundle').that.has.length.at.least(1);
     });
 
-    it('Add new product spec test', async () => {
-        // add product
-        let product_id = uuid.v4();
+    it('Add new product spec test', async function () {
         let res = await server
             .post('/api/product')
             .send({
-                id: product_id,
                 name: chance.string({ alpha: true, length: 10 }),
                 price: 0.0,
                 quantity: 1
             });
         expect(res).to.have.status(201);
-        expect(res.body).to.have.property('id').that.equals(product_id);
-        testResources.push(product_id);
+        expect(res.body.code).equals('Enqueued');
+        expect(res.body.content.id).to.not.be.null;
+
+        test_res.push(res.body.content.id);
     });
 
-    it('Update new spec products', async () => {
-        // add product
-        let product_id = uuid.v4();
+    it('Update new spec products', async function () {
+        // create product
         let res = await server
             .post(`/api/product`)
             .send({
-                id: product_id,
                 name: chance.string({ alpha: true, length: 10 }),
                 price: 0.0,
                 quantity: 1
             });
         expect(res).to.have.status(201);
-        expect(res.body).to.have.property('id').that.equals(product_id);
-        expect(res.body).to.have.property('price').that.equals(0.0);
-        
+        expect(res.body.code).equals('Enqueued');
+        expect(res.body.content.id).to.not.be.null;
+
         // update product
+        let product_id = res.body.content.id;
         res = await server
             .put(`/api/product/${product_id}`)
             .send({
                 id: product_id,
-                name: chance.string({ alpha: true, length: 10 }),
-                price: 1.0,
-                quantity: 1
+                name: res.body.content.name,
+                price: 10.0,
+                quantity: 100
             });
         expect(res).to.have.status(200);
-        expect(res.body).to.have.property('id').that.equals(product_id);
-        expect(res.body).to.have.property('price').that.equals(1.0);
-        testResources.push(product_id);
+        expect(res.body.code).equals('Enqueued');
+        expect(res.body.content.id).equals(product_id);
+
+        test_res.push(res.body.content.id);
     });
 
-    it('Remove products spec test', async () => {
+    it('Remove products spec test', async function () {
         // add product
         let product_id = uuid.v4();
         let res = await server
@@ -95,26 +80,21 @@ describe("API endpoint spec tests", async () => {
                 quantity: 1
             });
         expect(res).to.have.status(201);
-        expect(res.body).to.have.property('id').that.equals(product_id);
-        expect(res.body).to.have.property('price').that.equals(0.0);
-
-        // TODO: fix timeout issue
-        // remove added 
+        expect(res.body.code).equals('Enqueued');
+        // remove
         res = await server
-            .delete(`/api/product/${product_id}`)
+            .delete(`/api/product/${product_id}`);
         expect(res).to.have.status(204);
-
-        // check not found
-        res = await server
-            .get(`/api/product/${product_id}`);
-        expect(res).to.have.status(404);
     });
 
-    after(async () => {
-        // TODO: fix timeout issues
-        for (resource_id of testResources) {
-            let res = await server.delete(`/api/product/${resource_id}`);
-            expect(res).to.have.status(204);
+    after(async function () {
+        // iterate until it passes
+        for (let id of test_res) {
+            let res = await server.delete(`/api/product/${id}`);
+            while (res.status != 204) {
+                res = await server.delete(`/api/product/${id}`);
+            }
         }
-    });
+        await server.close();
+    })
 });

@@ -1,21 +1,26 @@
-const q = require('fastq')
 const superagent = require('superagent');
-const uuid = require('uuid');
+const cron = require('node-cron');
 
-const queue = q(worker, 1);
+let queue = [];
+cron.schedule('*/2 * * * * *', function () {
+    if (queue.length > 0) {
+        worker(queue.shift());
+    }
+});
 
-function worker(task, callback) {
-    console.log('Processing task:', task.type, 'Task endpoint:', task.endpoint);
+function worker(task) {
+    console.log('Processing task:', task.type);
     switch (task.type) {
         case 'PUT': {
             superagent
-                .post(task.end)
+                .post(task.endpoint)
                 .send(task.payload)
                 .then(res => {
-                    console.log('Task successfully done');
+                    console.log(`Updated ${task.payload.id}`);
                 })
                 .catch(err => {
-                    console.log('Failed to process task');
+                    console.log(`Failed to update ${task.payload.id}`);
+                    queue.push(task);
                 });
             break;
         }
@@ -24,10 +29,11 @@ function worker(task, callback) {
                 .post(task.endpoint)
                 .send(task.payload)
                 .then(res => {
-                    console.log('Task successfully done');
+                    console.log(`Created ${task.payload.id}`);
                 })
                 .catch(err => {
-                    console.log('Failed to process task');
+                    console.log(`Failed to create ${task.payload.id}`);
+                    queue.push(task);
                 });
             break;
         }
@@ -35,15 +41,19 @@ function worker(task, callback) {
             superagent
                 .delete(task.endpoint)
                 .then(res => {
-                    console.log('Task successfully done');
+                    console.log(`Removed ${task.endpoint.substring(task.endpoint.length - 36)}`);
                 })
                 .catch(err => {
-                    console.log('Failed to process task');
+                    if (err.response.status == 404) {
+                        console.log(`Not found ${task.endpoint.substring(task.endpoint.length - 36)}`);
+                    } else {
+                        console.log(`Removed ${task.endpoint.substring(task.endpoint.length - 36)}`);
+                        queue.push(task);
+                    }
                 });
             break;
         }
     }
-    console.log('Tasks in queue: ', queue.length());
 }
 
 module.exports = { queue };

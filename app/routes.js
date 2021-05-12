@@ -17,7 +17,11 @@ function listProducts(req, res) {
 function getProduct(req, res) {
     superagent.get(`${supplyChain}/${req.params.id}`, (err, sp) => {
         if (err) {
-            res.status(500).json({ code: 'Error', message: 'Failed to process request. Try again later.' });
+            if (err.response.status == 404) {
+                res.status(404).json({ code: 'Done', message: 'Resource not found' });
+            } else {
+                res.status(500).json({ code: 'Error', message: 'Failed to process request. Try again later.' });
+            }
         } else {
             res.status(200).json({ code: 'Done', content: sp.body });
         }

@@ -13,9 +13,11 @@ As the supply chain API throws errors on random basis, then all GET requests wil
 # Notes
 - Supply chain API fully replaces the object if it contains the id. I do not provide mechanism for merging the objects so the partial objects - that doesn't contain all the fields - will be fully replaced
 - Tests rely on the real backend thus they fail if the underlying supply chain is down
-- I hardcoded certain parameters for simplicity
+- I hardcoded existing product id in the config.json file so it needs to be checked before execution of the tests
+- Test sometimes can fail due to relatively unpredictable behavior of the underline API
 # API
 
+<h2>Default behavior</h2>
 <table>
     <tr>
         <th>Type</th>
@@ -118,6 +120,28 @@ As the supply chain API throws errors on random basis, then all GET requests wil
     </tr>
 </table>
 
+<h2>Errors</h2>
+<table>
+    <tr>
+        <th>Code</th>
+        <th>Response</th>
+    </tr>
+    <tr>
+        <td>404</td>
+        <td><pre>{
+    "code": "Done",
+    "message": "Resource not found"
+}</pre></td>
+    </tr>
+    <tr>
+        <td>500</td>
+        <td><pre>{
+    "code": "Error",
+    "message": "Failed to process request. Try again later."
+}</rep></td>
+    </tr>
+</table>
+
 # Improvements
 - introduce authentication
 - introduce caching for the products
@@ -127,5 +151,6 @@ As the supply chain API throws errors on random basis, then all GET requests wil
 - introduce logging
 - introduce domain model instead of adhoc JSON conversions
 - introduce pagination for product lists
-- introduce unit testing rather than relying on real server
+- introduce unit testing rather than relying on real server for API testing
 - introduce code documentation rather than comments
+- introduce fallbacks in case of API failures if needed

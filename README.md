@@ -1,6 +1,15 @@
 # supply-chain-product-catalog
 Product catalog with supply chain API
 
+# run
+To run tests
+
+```npm test```
+
+To run app
+
+```npm start```
+
 # Overview
 According to the specification supply chain provides GET/POST/DELETE endpoints. GET allows to retrieve all the products from the chain and a single product by id. POST allows to create a new product in the chain. DELETE allows to delete the product by the id. Aside that, the supply chain throws errors on random basis.
 

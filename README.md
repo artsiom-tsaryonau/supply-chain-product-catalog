@@ -1,5 +1,5 @@
 # supply-chain-product-catalog
-Product catalog with supply chain API
+Product catalog with supply chain API. !!! DOES NOT REPRESENT THE CURRENT STATE !!!
 
 # run
 To run tests
@@ -169,3 +169,6 @@ As the supply chain API throws errors on random basis, then all GET requests wil
 - introduce unit testing rather than relying on real server for API testing
 - introduce code documentation rather than comments
 - introduce fallbacks in case of API failures if needed
+
+# Note
+!!!! ./aws/credentials file doesn't work! You have to set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY !!!!

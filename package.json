@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/artsiom-tsaryonau/supply-chain-product-catalog#readme",
   "dependencies": {
+    "aws-sdk": "^2.977.0",
     "express": "^4.17.1",
     "node-cron": "^3.0.0",
     "uuid": "^8.3.2"

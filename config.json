@@ -2,8 +2,5 @@
     "supplyChain": "https://test/supply-chain",
     "server": {
         "port": 2021
-    },
-    "test": {
-        "existId": "4dbbe4e7-9716-4843-8e4c-d93f1b92cea5"
     }
 }
